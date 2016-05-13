@@ -17,7 +17,7 @@ func ping(c chan HostStatus, host string) {
 	var err error
 	var hs HostStatus
 	cmdName := "ping"
-	cmdArgs := []string{"-c1", "-W1", host}
+	cmdArgs := []string{"-c3", "-w3", host}
 
 	hs.hostName = host
 	if _, err = exec.Command(cmdName, cmdArgs...).Output(); err != nil {
@@ -28,6 +28,12 @@ func ping(c chan HostStatus, host string) {
 	c <- hs
 }
 
+/*
+Goroutines are created as many as there are hosts to ping.
+The results are stored in channels and are to be popped up later for
+printing to the console.
+The number of channels may be as little as 1.
+*/
 func main() {
 	// get the starting time
 	startTime := time.Now().UTC()
@@ -42,10 +48,11 @@ func main() {
 	scanner := bufio.NewScanner(inFile)
 
 	//use channels
-	numOfGr := 26 //hardcoded for now
+	numOfGr := 1 //hardcoded for now
 	chans := make([]chan HostStatus, numOfGr)
 	for i := range chans {
 		chans[i] = make(chan HostStatus)
+		fmt.Println(i+1, "channels created")
 	}
 
 	go func() {
