@@ -19,7 +19,7 @@ func ping(result chan HostStatus, host string) {
 	var err error
 	var hs HostStatus
 	cmdName := "ping"
-	cmdArgs := []string{"-c1", "-w1", host}
+	cmdArgs := []string{"-c3", "-t3", host}
 
 	hs.hostName = host
 	if _, err = exec.Command(cmdName, cmdArgs...).Output(); err != nil {
